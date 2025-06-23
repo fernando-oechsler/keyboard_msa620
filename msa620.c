@@ -14,7 +14,7 @@ MODULE_DESCRIPTION("teste");
 
 /* Declate the probe and remove functions */
 static int dt_probe(struct platform_device *pdev);
-static int dt_remove(struct platform_device *pdev);
+static void dt_remove(struct platform_device *pdev);
 
 static struct of_device_id my_driver_ids[] = {
 	{
@@ -64,7 +64,7 @@ static int dt_probe(struct platform_device *pdev) {
 	printk("dt_gpio - Now I am in the probe function!\n");
 
 	/* Check for device properties */
-	if(!device_property_present(dev, "led")) {
+	if(!device_property_present(dev, "led-gpios")) {
 		printk("dt_gpio - Error! Device property 'led' not found!\n");
 		return -1;
 	}
@@ -91,11 +91,10 @@ static int dt_probe(struct platform_device *pdev) {
 /**
  * @brief This function is called on unloading the driver 
  */
-static int dt_remove(struct platform_device *pdev) {
+static void dt_remove(struct platform_device *pdev) {
 	printk("dt_gpio - Now I am in the remove function\n");
 	gpiod_put(my_led);
 	proc_remove(proc_file);
-	return 0;
 }
 
 /**
