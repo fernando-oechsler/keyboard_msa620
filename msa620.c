@@ -1,85 +1,123 @@
 #include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/gpio/consumer.h>
+#include <linux/init.h>
+#include <linux/mod_devicetable.h>
+#include <linux/property.h>
 #include <linux/platform_device.h>
-#include <linux/of.h>
-#include <linux/of_gpio.h>
-#include <linux/kthread.h>
-#include <linux/delay.h>
-#include <linux/sched.h>
+#include <linux/of_device.h>
+#include <linux/gpio/consumer.h>
+#include <linux/proc_fs.h>
 
-static struct gpio_descs *led_desc;
-static struct task_struct *blink_thread;
-
-// Função da thread
-static int blink_thread_fn(void *data)
-{
-    bool led_state = false;
-
-    while (!kthread_should_stop()) {
-        led_state = !led_state;
-
-        // Atualiza o estado dos LEDs
-        gpiod_set_array_value_cansleep(led_desc->ndescs, led_desc->desc, NULL,
-                                       (unsigned long[]){led_state, led_state});
-
-        // Espera 500ms sem travar a CPU
-        set_current_state(TASK_INTERRUPTIBLE);
-        schedule_timeout(msecs_to_jiffies(500));
-    }
-
-    return 0;
-}
-
-// Função INIT
-static int __init led_driver_init(void)
-{
-    struct device_node *np;
-
-    pr_info("led_blink: Init\n");
-
-    // Acha o nó no device tree
-    np = of_find_node_by_name(NULL, "multitherm_gpio");
-    if (!np) {
-        pr_err("led_blink: Node multitherm_gpio não encontrado!\n");
-        return -ENODEV;
-    }
-
-    // Pega os GPIOs dos LEDs
-    led_desc = gpiod_get_array(np, "led", GPIOD_OUT_LOW);
-    of_node_put(np);
-
-    if (IS_ERR(led_desc)) {
-        pr_err("led_blink: Falha ao pegar led-gpios\n");
-        return PTR_ERR(led_desc);
-    }
-
-    // Cria a thread
-    blink_thread = kthread_run(blink_thread_fn, NULL, "led_blink_thread");
-    if (IS_ERR(blink_thread)) {
-        pr_err("led_blink: Falha na criação da thread\n");
-        gpiod_put_array(led_desc);
-        return PTR_ERR(blink_thread);
-    }
-
-    return 0;
-}
-
-// Função EXIT
-static void __exit led_driver_exit(void)
-{
-    pr_info("led_blink: Exit\n");
-
-    if (blink_thread)
-        kthread_stop(blink_thread);
-
-    if (led_desc)
-        gpiod_put_array(led_desc);
-}
-
-module_init(led_driver_init);
-module_exit(led_driver_exit);
-
+/* Meta Information */
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("fefo");
-MODULE_DESCRIPTION("Driver para piscar LEDs via device tree");
+MODULE_AUTHOR("fernando-oechsler");
+MODULE_DESCRIPTION("teste");
+
+/* Declate the probe and remove functions */
+static int dt_probe(struct platform_device *pdev);
+static int dt_remove(struct platform_device *pdev);
+
+static struct of_device_id my_driver_ids[] = {
+	{
+		.compatible = "keyboard,msa620",
+	}, { /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, my_driver_ids);
+
+static struct platform_driver my_driver = {
+	.probe = dt_probe,
+	.remove = dt_remove,
+	.driver = {
+		.name = "my_device_driver",
+		.of_match_table = my_driver_ids,
+	},
+};
+
+/* GPIO variable */
+static struct gpio_desc *my_led = NULL;
+
+static struct proc_dir_entry *proc_file;
+
+/**
+ * @brief Write data to buffer
+ */
+static ssize_t my_write(struct file *File, const char *user_buffer, size_t count, loff_t *offs) {
+	switch (user_buffer[0]) {
+		case '0':
+		case '1':
+			gpiod_set_value(my_led, user_buffer[0] - '0');
+		default:
+			break;
+	}
+	return count;
+}
+
+static struct proc_ops fops = {
+	.proc_write = my_write,
+};
+
+/**
+ * @brief This function is called on loading the driver 
+ */
+static int dt_probe(struct platform_device *pdev) {
+	struct device *dev = &pdev->dev;
+	int my_value, ret;
+
+	printk("dt_gpio - Now I am in the probe function!\n");
+
+	/* Check for device properties */
+	if(!device_property_present(dev, "led")) {
+		printk("dt_gpio - Error! Device property 'led' not found!\n");
+		return -1;
+	}
+
+	/* Init GPIO */
+	my_led = gpiod_get(dev, "led", GPIOD_OUT_LOW);
+	if(IS_ERR(my_led)) {
+		printk("dt_gpio - Error! Could not setup the GPIO\n");
+		return -1 * IS_ERR(my_led);
+	}
+
+	/* Creating procfs file */
+	proc_file = proc_create("my-led", 0666, NULL, &fops);
+	if(proc_file == NULL) {
+		printk("procfs_test - Error creating /proc/my-led\n");
+		gpiod_put(my_led);
+		return -ENOMEM;
+	}
+
+
+	return 0;
+}
+
+/**
+ * @brief This function is called on unloading the driver 
+ */
+static int dt_remove(struct platform_device *pdev) {
+	printk("dt_gpio - Now I am in the remove function\n");
+	gpiod_put(my_led);
+	proc_remove(proc_file);
+	return 0;
+}
+
+/**
+ * @brief This function is called, when the module is loaded into the kernel
+ */
+static int __init my_init(void) {
+	printk("dt_gpio - Loading the driver...\n");
+	if(platform_driver_register(&my_driver)) {
+		printk("dt_gpio - Error! Could not load driver\n");
+		return -1;
+	}
+	return 0;
+}
+
+/**
+ * @brief This function is called, when the module is removed from the kernel
+ */
+static void __exit my_exit(void) {
+	printk("dt_gpio - Unload driver");
+	platform_driver_unregister(&my_driver);
+}
+
+module_init(my_init);
+module_exit(my_exit);

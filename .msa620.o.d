@@ -486,7 +486,11 @@ msa620.o: /home/fernando/Desktop/keyboard_msa620/msa620.c \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/dynamic_debug.h \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/module.h \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/module.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/gpio/consumer.h \
+ /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/mod_devicetable.h \
+ /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/uapi/linux/mei.h \
+ /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/uapi/linux/mei_uuid.h \
+ /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/property.h \
+ /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/fwnode.h \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/platform_device.h \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/device.h \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/dev_printk.h \
@@ -503,54 +507,6 @@ msa620.o: /home/fernando/Desktop/keyboard_msa620/msa620.c \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/device/driver.h \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/device.h \
  /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/pm_wakeup.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/of.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/mod_devicetable.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/uapi/linux/mei.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/uapi/linux/mei_uuid.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/property.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/fwnode.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/of_gpio.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/gpio/driver.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/irqchip/chained_irq.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/irq.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/irqhandler.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/irqreturn.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/io.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/io.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/pgtable.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/pgtable.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/proc-fns.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/tlbflush.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/mmu_notifier.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/mmap_lock.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/interval_tree.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/fixmap.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/fixmap.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/por.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/page_table_check.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/pgtable_uffd.h \
- arch/arm64/include/generated/asm/early_ioremap.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/early_ioremap.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/io.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/pci_iomap.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/logic_pio.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/arch/arm64/include/asm/irq.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/irq.h \
- arch/arm64/include/generated/asm/irq_regs.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/irq_regs.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/irqdesc.h \
- arch/arm64/include/generated/asm/hw_irq.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/hw_irq.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/irqdomain.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/irqdomain_defs.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/pinctrl/pinconf-generic.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/pinctrl/machine.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/pinctrl/pinctrl-state.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/pinctrl/pinctrl.h \
- arch/arm64/include/generated/asm/msi.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/msi.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/gpio.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/kthread.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/delay.h \
- arch/arm64/include/generated/asm/delay.h \
- /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/asm-generic/delay.h
+ /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/of_device.h \
+ /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/gpio/consumer.h \
+ /usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/proc_fs.h
