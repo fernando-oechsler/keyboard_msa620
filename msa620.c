@@ -33,7 +33,7 @@ static struct platform_driver my_driver = {
 };
 
 /* GPIO variable */
-static struct gpio_desc *my_leds = NULL;
+static struct gpio_desc *my_led = NULL;
 
 static struct proc_dir_entry *proc_file;
 
@@ -41,18 +41,14 @@ static struct proc_dir_entry *proc_file;
  * @brief Write data to buffer
  */
 static ssize_t my_write(struct file *File, const char *user_buffer, size_t count, loff_t *offs) {
-    int i, val;
-
-    if (user_buffer[0] != '0' && user_buffer[0] != '1')
-        return count;
-
-    val = user_buffer[0] - '0';
-
-    for (i = 0; i < my_leds->ndescs; i++) {
-        gpiod_set_value(my_leds->desc[i], val);
-    }
-
-    return count;
+	switch (user_buffer[0]) {
+		case '0':
+		case '1':
+			gpiod_set_value(my_led, user_buffer[0] - '0');
+		default:
+			break;
+	}
+	return count;
 }
 
 static struct proc_ops fops = {
@@ -68,23 +64,23 @@ static int dt_probe(struct platform_device *pdev) {
 	printk("dt_gpio - Now I am in the probe function!\n");
 
 	/* Check for device properties */
-	if(!device_property_present(dev, "led-gpios")) {
+	if(!device_property_present(dev, "ledtec-gpios")) {
 		printk("dt_gpio - Error! Device property 'led' not found!\n");
 		return -1;
 	}
 
 	/* Init GPIO */
-	my_leds = gpiod_get_array(&pdev->dev, "led", GPIOD_OUT_LOW);
-	if (IS_ERR(my_leds)) {
+	my_led = gpiod_get(dev, "ledtec", GPIOD_OUT_LOW);
+	if (IS_ERR(my_led)) {
     		printk("dt_gpio - Error! Could not setup the LED GPIOs\n");
-    		return PTR_ERR(my_leds);
+    		return PTR_ERR(my_led);
 	}
 
 	/* Creating procfs file */
 	proc_file = proc_create("my-led", 0666, NULL, &fops);
 	if(proc_file == NULL) {
 		printk("procfs_test - Error creating /proc/my-led\n");
-		gpiod_put_array(my_leds);
+		gpiod_put(my_led);
 		return -ENOMEM;
 	}
 
@@ -97,7 +93,7 @@ static int dt_probe(struct platform_device *pdev) {
  */
 static void dt_remove(struct platform_device *pdev) {
 	printk("dt_gpio - Now I am in the remove function\n");
-	gpiod_put_array(my_leds);
+	gpiod_put(my_led);
 	proc_remove(proc_file);
 }
 
