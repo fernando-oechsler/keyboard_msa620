@@ -17,7 +17,7 @@ all:
 
 install:
 	# sudo cp $(MODULE_NAME).ko $(MODULE_DIR)
-	sudo cp $(MODULE_NAME).dtb $(OVERLAY_DIR)/
+	sudo cp $(MODULE_NAME).dtbo $(OVERLAY_DIR)/
 	
 	# @echo "$(MODULE_NAME)" | sudo tee -a $(MODULE_FILE)
 	@echo "$(TREE_CONFIG)" | sudo tee -a $(CONFIG_FILE)
@@ -27,17 +27,17 @@ install:
 
 clean:
 	mkdir -p $(TEMP_DIR)
-	mv $(MODULE_NAME).dtb $(TEMP_DIR)/
+	mv $(MODULE_NAME).dtbo $(TEMP_DIR)/
 	
 	# make -C $(KERNEL_DIR) M=$(shell pwd) clean
 	
-	sudo rm -f $(OVERLAY_DIR)/$(MODULE_NAME).dtb
+	sudo rm -f $(OVERLAY_DIR)/$(MODULE_NAME).dtbo
 	# sudo rm -f $(MODULE_DIR)/$(MODULE_NAME).ko	
 	
 	# sudo sed -i '/$(MODULE_NAME)/d' $(MODULE_FILE)
 	sudo sed -i '/msa620/d' $(CONFIG_FILE)
 	
-	mv $(TEMP_DIR)/$(MODULE_NAME).dtb ./
+	mv $(TEMP_DIR)/$(MODULE_NAME).dtbo ./
 	rm -rf $(TEMP_DIR)
 	
 	# sudo rmmod teste
