@@ -41,14 +41,18 @@ static struct proc_dir_entry *proc_file;
  * @brief Write data to buffer
  */
 static ssize_t my_write(struct file *File, const char *user_buffer, size_t count, loff_t *offs) {
-	switch (user_buffer[0]) {
-		case '0':
-		case '1':
-			gpiod_set_value(my_led, user_buffer[0] - '0');
-		default:
-			break;
-	}
-	return count;
+    int i, val;
+
+    if (user_buffer[0] != '0' && user_buffer[0] != '1')
+        return count;
+
+    val = user_buffer[0] - '0';
+
+    for (i = 0; i < my_leds->ndescs; i++) {
+        gpiod_set_value(my_leds->desc[i], val);
+    }
+
+    return count;
 }
 
 static struct proc_ops fops = {
@@ -70,10 +74,10 @@ static int dt_probe(struct platform_device *pdev) {
 	}
 
 	/* Init GPIO */
-	my_led = gpiod_get(dev, "led", GPIOD_OUT_LOW);
-	if(IS_ERR(my_led)) {
-		printk("dt_gpio - Error! Could not setup the GPIO\n");
-		return -1 * IS_ERR(my_led);
+	my_leds = gpiod_get_array(&pdev->dev, "led", GPIOD_OUT_LOW);
+	if (IS_ERR(my_leds)) {
+    		printk("dt_gpio - Error! Could not setup the LED GPIOs\n");
+    		return PTR_ERR(my_leds);
 	}
 
 	/* Creating procfs file */
@@ -93,7 +97,7 @@ static int dt_probe(struct platform_device *pdev) {
  */
 static void dt_remove(struct platform_device *pdev) {
 	printk("dt_gpio - Now I am in the remove function\n");
-	gpiod_put(my_led);
+	gpiod_put_array(my_leds);
 	proc_remove(proc_file);
 }
 
