@@ -60,7 +60,6 @@ static struct proc_ops fops = {
  */
 static int dt_probe(struct platform_device *pdev) {
 	struct device *dev = &pdev->dev;
-	int my_value, ret;
 
 	printk("dt_gpio - Now I am in the probe function!\n");
 
