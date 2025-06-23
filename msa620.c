@@ -33,7 +33,7 @@ static struct platform_driver my_driver = {
 };
 
 /* GPIO variable */
-static struct gpio_desc *my_led = NULL;
+static struct gpio_desc *my_leds = NULL;
 
 static struct proc_dir_entry *proc_file;
 
@@ -84,7 +84,7 @@ static int dt_probe(struct platform_device *pdev) {
 	proc_file = proc_create("my-led", 0666, NULL, &fops);
 	if(proc_file == NULL) {
 		printk("procfs_test - Error creating /proc/my-led\n");
-		gpiod_put(my_led);
+		gpiod_put_array(my_leds);
 		return -ENOMEM;
 	}
 

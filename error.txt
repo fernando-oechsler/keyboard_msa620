@@ -1,0 +1,41 @@
+fernando@raspberrypi:~/Desktop/keyboard_msa620 $ make
+make -C /lib/modules/6.12.25+rpt-rpi-v8/build M=/home/fernando/Desktop/keyboard_msa620 modules
+make[1]: Entrando no diretório '/usr/src/linux-headers-6.12.25+rpt-rpi-v8'
+
+  CC [M]  /home/fernando/Desktop/keyboard_msa620/msa620.o
+/home/fernando/Desktop/keyboard_msa620/msa620.c: In function ‘my_write’:
+/home/fernando/Desktop/keyboard_msa620/msa620.c:51:28: error: invalid use of undefined type ‘struct gpio_desc’
+   51 |     for (i = 0; i < my_leds->ndescs; i++) {
+      |                            ^~
+/home/fernando/Desktop/keyboard_msa620/msa620.c:52:32: error: invalid use of undefined type ‘struct gpio_desc’
+   52 |         gpiod_set_value(my_leds->desc[i], val);
+      |                                ^~
+/home/fernando/Desktop/keyboard_msa620/msa620.c: In function ‘dt_probe’:
+/home/fernando/Desktop/keyboard_msa620/msa620.c:77:17: error: assignment to ‘struct gpio_desc *’ from incompatible pointer type ‘struct gpio_descs *’ [-Werror=incompatible-pointer-types]
+   77 |         my_leds = gpiod_get_array(&pdev->dev, "led", GPIOD_OUT_LOW);
+      |                 ^
+/home/fernando/Desktop/keyboard_msa620/msa620.c:87:33: error: passing argument 1 of ‘gpiod_put_array’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+   87 |                 gpiod_put_array(my_leds);
+      |                                 ^~~~~~~
+      |                                 |
+      |                                 struct gpio_desc *
+In file included from /home/fernando/Desktop/keyboard_msa620/msa620.c:7:
+/usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/gpio/consumer.h:84:41: note: expected ‘struct gpio_descs *’ but argument is of type ‘struct gpio_desc *’
+   84 | void gpiod_put_array(struct gpio_descs *descs);
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~~
+/home/fernando/Desktop/keyboard_msa620/msa620.c: In function ‘dt_remove’:
+/home/fernando/Desktop/keyboard_msa620/msa620.c:100:25: error: passing argument 1 of ‘gpiod_put_array’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+  100 |         gpiod_put_array(my_leds);
+      |                         ^~~~~~~
+      |                         |
+      |                         struct gpio_desc *
+/usr/src/linux-headers-6.12.25+rpt-common-rpi/include/linux/gpio/consumer.h:84:41: note: expected ‘struct gpio_descs *’ but argument is of type ‘struct gpio_desc *’
+   84 | void gpiod_put_array(struct gpio_descs *descs);
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~~
+cc1: some warnings being treated as errors
+make[3]: *** [/usr/src/linux-headers-6.12.25+rpt-common-rpi/scripts/Makefile.build:249: /home/fernando/Desktop/keyboard_msa620/msa620.o] Erro 1
+make[2]: *** [/usr/src/linux-headers-6.12.25+rpt-common-rpi/Makefile:1974: /home/fernando/Desktop/keyboard_msa620] Erro 2
+make[1]: *** [/usr/src/linux-headers-6.12.25+rpt-common-rpi/Makefile:236: __sub-make] Erro 2
+make[1]: Saindo do diretório '/usr/src/linux-headers-6.12.25+rpt-rpi-v8'
+
+make: *** [Makefile:16: all] Erro 2
